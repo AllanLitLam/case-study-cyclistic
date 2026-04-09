@@ -51,4 +51,4 @@ This strategy leverages a previously untapped behavioral pattern (ride duration 
 
 ---
 
-[ **Full Analysis Report**: [Cyclistic-Bike-Share-Case-Study.pdf](./Cyclistic-Bike-Share-Case-Study.pdf) | **Analysis Scripts**: [Cyclistic Bike-Share Case Study.Rmd](./Cyclistic-Bike-Share-Case-Study.Rmd) ]
+[ **Analysis Scripts**: [Cyclistic Bike-Share Case Study.Rmd](./Cyclistic-Bike-Share-Case-Study.Rmd) ]
