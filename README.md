@@ -34,7 +34,7 @@ My analysis used **Generalized Linear Models (GLM: Gamma and Poisson)** and **Tw
 **Strategy**: Implement a marketing campaign that incentivizes the unique, high-value behavior of casual riders: **long ride duration**.
 
 1. Tiered Discount Plan
-- Create a discount on the annual membership based on a casual rider's **cumulative ride time** (e.g., a 7% discount for logging 77+ minutes of total ride time). This directly rewards the behavior most valuable to Cyclistic's service.
+- Create a discount on the annual membership based on a casual rider's **cumulative ride time** (e.g., 10% discount for logging 30+ minutes of total ride time, the modeled mean of high-value casual riders). This directly rewards the behavior most valuable to Cyclistic's service.
   
 - **Refinement**: Focus the campaign solely on the **ride duration metric**, as using a 'total rides' limit is impractical for individual customer targeting.
 
