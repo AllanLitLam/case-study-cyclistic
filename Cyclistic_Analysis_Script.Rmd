@@ -18,9 +18,9 @@ library(scales)
 ```{r processing csv files}
 setwd("~/Desktop/Divvy_Trips")
 
-Q1_2019 = read.csv("/Users/allanlam/Desktop/Divvy_Trips/Divvy_Trips_2019_Q1.csv") %>% mutate(year = "2019")
+Q1_2019 = readr::read_csv(here::here("Divvy_Trips_2019_Q1.csv"))%>% mutate(year = "2019")
 glimpse(Q1_2019) 
-Q1_2020 = read.csv("/Users/allanlam/Desktop/Divvy_Trips/Divvy_Trips_2020_Q1.csv") %>% mutate(year = "2020")
+Q1_2020 = readr::read_csv(here::here("Divvy_Trips_2020_Q1.csv"))%>% mutate(year = "2020")
 glimpse(Q1_2020) 
 
 #change to numeric 
@@ -92,11 +92,13 @@ Q1_summary = Q1_agg_trimmed %>%
   group_by(usertype) %>% 
   summarize(group_trips = n(),
             mean_ride_length_sec = mean(ride_length_sec, na.rm = TRUE),
+            median_ride_length_sec = median(ride_length_sec, na.rm = TRUE),
             max_ride_length_sec = max(ride_length_sec, na.rm = TRUE),
             min_ride_length_sec = min(ride_length_sec, na.rm = TRUE),
             sd_ride_length_sec = sd(ride_length_sec, na.rm = TRUE),
             
             mean_ride_length_min = mean(ride_length_min, na.rm = TRUE),
+            median_ride_length_min = median(ride_length_min, na.rm = TRUE),
             max_ride_length_min = max(ride_length_min, na.rm = TRUE),
             min_ride_length_min = min(ride_length_min, na.rm = TRUE),
             sd_ride_length_min = sd(ride_length_min, na.rm = TRUE),
@@ -106,8 +108,8 @@ Q1_summary = Q1_agg_trimmed %>%
 # Bar plot: Mean ride length by user type
 ggplot(data = Q1_summary, aes(x= usertype, y= mean_ride_length_min, fill = usertype)) + 
   geom_col() + 
-  geom_text(aes(label = round(mean_ride_length_min,2)), vjust = -0.5) +
-  labs(title = "Mean Ride Length by User Type", y = "Mean Ride Length (minutes)", x = "User Type") +
+  geom_text(aes(label = round(median_ride_length_min,2)), vjust = -0.5) +
+  labs(title = "Median Ride Length by User Type", y = "Median Ride Length (minutes)", x = "User Type") +
   ylim(0,85) +
   theme_light()
 
@@ -128,19 +130,19 @@ Q1_summary_by_days = Q1_agg_trimmed %>%
             min_ride_length_sec = min(ride_length_sec, na.rm = TRUE),
             sd_ride_length_sec = sd(ride_length_sec, na.rm = TRUE),
             
-            mean_ride_length_min = mean(ride_length_min, na.rm = TRUE),
+            median_ride_length_min = median(ride_length_min, na.rm = TRUE),
             max_ride_length_min = max(ride_length_min, na.rm = TRUE),
             min_ride_length_min = min(ride_length_min, na.rm = TRUE),
             sd_ride_length_min = sd(ride_length_min, na.rm = TRUE))
 
 # Bar plot: Mean Ride Length by User Type, Faceted by Day
-ggplot(data = Q1_summary_by_days, aes(x= usertype, y= mean_ride_length_min, fill = usertype)) + 
+ggplot(data = Q1_summary_by_days, aes(x= usertype, y= median_ride_length_min, fill = usertype)) + 
   geom_col() +
-  geom_text(aes(label = round(mean_ride_length_min,2)), vjust = -0.2) +
+  geom_text(aes(label = round(median_ride_length_min,2)), vjust = -0.2) +
   facet_wrap(~ fct_relevel(day_of_week,
                            "Monday", "Tuesday", "Wednesday", 
                            "Thursday", "Friday", "Saturday", "Sunday"), axes = "all") +
-  labs(title = "Mean Ride Length by User Type, Separated by Day", y = "Mean Ride Length (minutes)", x = "User Type") +
+  labs(title = "Median Ride Length by User Type, Separated by Day", y = "Median Ride Length (minutes)", x = "User Type") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.2)))+
   theme_light()
 
@@ -151,7 +153,7 @@ ggplot(data = Q1_summary_by_days, aes(x= usertype, y= group_trips, fill = userty
    facet_wrap(~ fct_relevel(day_of_week,
                            "Monday", "Tuesday", "Wednesday", 
                            "Thursday", "Friday", "Saturday", "Sunday"), axes = "all") +
-  labs(title = "Total Trips by User Type, Separated by Day", y = "Mean Ride Length (minutes)", x = "User Type") +
+  labs(title = "Total Trips by User Type, Separated by Day", y = "Median Ride Length (minutes)", x = "User Type") +
   scale_y_continuous(labels = comma,expand = expansion(mult = c(0, 0.2)))+ 
   theme_light() 
 ```
@@ -273,8 +275,11 @@ Q1_summary %>%
   labs(title = "Proportion of Total Trips by User Type") +
   theme_void()
 
+Q1_agg_trimmed = Q1_agg_trimmed %>% mutate (UserType = 
+                                              case_when (usertype == "Customer" ~ "Casual Riders", usertype == "Subscriber" ~ "Annual Members"))
+
 # Boxplot: Ride Length by User Type and Day of Week
-ggplot(Q1_agg_trimmed, aes(x = day_of_week, y = ride_length_min, fill = usertype)) +
+ggplot(Q1_agg_trimmed, aes(x = day_of_week, y = ride_length_min, fill = UserType)) +
   geom_boxplot(outlier.shape = NA) +                                   
   coord_cartesian(ylim = c(0, 50)) +                                   
   labs(title = "Ride Length by User Type and Day of Week",             
